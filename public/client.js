@@ -19,28 +19,25 @@ var todoList = {
   toggleAll: function() {
     var totalTodos = this.todos.length;
     var completedTodos = 0;
-    
     // Get number of completed todos.
     for (var i = 0; i < totalTodos; i++) {
       if (this.todos[i].completed === true) {
         completedTodos++;
       }
     }
-    
     // Case 1: If everything’s true, make everything false.
     if (completedTodos === totalTodos) {
       for (var i = 0; i < totalTodos; i++) {
         this.todos[i].completed = false;
       }
-    // Case 2: Otherwise, make everything true.
+      // Case 2: Otherwise, make everything true.
     } else {
       for (var i = 0; i < totalTodos; i++) {
         this.todos[i].completed = true;
-      }      
+      }
     }
   }
 };
-
 var handlers = {
   addTodo: function() {
     var addTodoTextInput = document.getElementById('addTodoTextInput');
@@ -56,10 +53,8 @@ var handlers = {
     changeTodoTextInput.value = '';
     view.displayTodos();
   },
-  deleteTodo: function() {
-    var deleteTodoPositionInput = document.getElementById('deleteTodoPositionInput');
-    todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
-    deleteTodoPositionInput.value = '';
+  deleteTodo: function(position) {
+    todoList.deleteTodo(position);
     view.displayTodos();
   },
   toggleCompleted: function() {
@@ -71,9 +66,8 @@ var handlers = {
   toggleAll: function() {
     todoList.toggleAll();
     view.displayTodos();
-  }  
+  }
 };
-
 var view = {
   displayTodos: function() {
     var todosUl = document.querySelector('ul');
@@ -82,13 +76,11 @@ var view = {
       var todoLi = document.createElement('li');
       var todo = todoList.todos[i];
       var todoTextWithCompletion = '';
-
       if (todo.completed === true) {
         todoTextWithCompletion = '(x) ' + todo.todoText;
       } else {
         todoTextWithCompletion = '( ) ' + todo.todoText;
       }
-      
       todoLi.id = i;
       todoLi.textContent = todoTextWithCompletion;
       todoLi.appendChild(this.createDeleteButton());
@@ -100,20 +92,17 @@ var view = {
     deleteButton.textContent = 'Delete';
     deleteButton.className = 'deleteButton';
     return deleteButton;
+  },
+  setUpEventListeners: function() {
+    var todosUl = document.querySelector('ul');
+    todosUl.addEventListener('click', function(event) {
+      //Get the element that was clicked on.
+      var elementClicked = event.target;
+      //Check if element clicked is a delete button.
+      if (elementClicked.className === 'deleteButton') {
+        handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
+      }
+    });
   }
 };
-
-var todosUl = document.querySelector('ul');
-
-todosUl.addEventListener('click', function(event) {
-  console.log(event.target.parentNode.id);
-});
-
-
-
-
-
-
-
-
-
+view.setUpEventListeners();
